@@ -4,7 +4,7 @@
   </div>
   <div class="row">
     <div class="col-sm mt-3">
-      <button class="btn btn-success">GO</button>
+      <button class="btn btn-success" (click)="addItem()">ADD</button>
     </div>
     <div class="col-sm">
       <button class="btn btn-success">GO</button>
@@ -12,5 +12,12 @@
     <div class="col-sm">
       <button class="btn btn-success">GO</button>
     </div>
+  </div>
+  <div class="row">
+    <ul>
+      <li class="text" *ngFor="let item of list | async">
+        {{item | json}}
+      </li>
+    </ul>
   </div>
 </div>
