@@ -45,19 +45,39 @@ export class AppComponent implements OnInit {
   public addressLocation: any;
   public directionsDisplay = new google.maps.DirectionsRenderer;
   private itemsCollection: AngularFirestoreCollection<any>;
-  items: Observable<any[]>;
 
-  constructor(protected afs: AngularFirestore) {
-
-  }
+  constructor(protected afs: AngularFirestore) { }
 
   ngOnInit() {
     this.initMap(25.2048493, 55.270782800000006);
     this.itemsCollection = this.afs.collection<any>('free_driver');
-    this.items = this.itemsCollection.valueChanges();
-    this.items.subscribe(e => {
-      console.log(e);
-    })
+    this.itemsCollection.valueChanges()
+      .subscribe(result => result.map(e => this.plotMarker(e)));
+    // this.items.subscribe(result => {
+    //   result.map(e => this.plotMarker(e));
+    // })
+  }
+
+  plotMarker(e) {
+    console.log(e.current.latitude, e.current.longitude);
+    this.marker = new google.maps.Marker({
+      position: new google.maps.LatLng(e.current.latitude, e.current.longitude),
+      map: this.map,
+    });
+  };
+
+  initMap(lat, lng) {
+    const self = this;
+    this.map = new google.maps.Map(document.getElementById('orderBookingMap'), {
+      center: new google.maps.LatLng(lat, lng),
+      zoom: 11,
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      scrollwheel: true,
+      disableDefaultUI: true,
+      zoomControl: true
+    });
+    this.directionsDisplay.setMap(this.map);
+    this.directionsDisplay.setOptions({ suppressMarkers: true });
   }
 
   addItem() {
@@ -84,22 +104,5 @@ export class AppComponent implements OnInit {
 
   }
 
-  initMap(lat, lng) {
-    const self = this;
-    this.map = new google.maps.Map(document.getElementById('orderBookingMap'), {
-      center: new google.maps.LatLng(lat, lng),
-      zoom: 11,
-      mapTypeId: google.maps.MapTypeId.ROADMAP,
-      scrollwheel: true,
-      disableDefaultUI: true,
-      zoomControl: true
-    });
-    this.directionsDisplay.setMap(this.map);
-    this.directionsDisplay.setOptions({ suppressMarkers: true });
-    this.marker = new google.maps.Marker({
-      position: new google.maps.LatLng(lat, lng),
-      map: this.map,
-    });
-  }
 
 }
