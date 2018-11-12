@@ -39,11 +39,18 @@ export class AppComponent implements OnInit {
     { lat: 25.16179532947713, lng: 55.4960632064483 },
     { lat: 25.125743571107243, lng: 55.45349118496392 }
   ]
+  public eta_start = {
+    lat: 25.08615674084264, lng: 55.392980549587946
+  }
+  public eta_end = {
+    lat: 25.09337853824279, lng: 55.3871011474273
+  }
 
   public map: any;
   public marker: any;
   public addressLocation: any;
   public directionsDisplay = new google.maps.DirectionsRenderer;
+  public directionsService = new google.maps.DirectionsService();
   private itemsCollection: AngularFirestoreCollection<any>;
 
   constructor(protected afs: AngularFirestore) { }
@@ -53,13 +60,10 @@ export class AppComponent implements OnInit {
     this.itemsCollection = this.afs.collection<any>('free_driver');
     this.itemsCollection.valueChanges()
       .subscribe(result => result.map(e => this.plotMarker(e)));
-    // this.items.subscribe(result => {
-    //   result.map(e => this.plotMarker(e));
-    // })
   }
 
   plotMarker(e) {
-    console.log(e.current.latitude, e.current.longitude);
+    //console.log(e.current.latitude, e.current.longitude);
     this.marker = new google.maps.Marker({
       position: new google.maps.LatLng(e.current.latitude, e.current.longitude),
       map: this.map,
@@ -78,6 +82,24 @@ export class AppComponent implements OnInit {
     });
     this.directionsDisplay.setMap(this.map);
     this.directionsDisplay.setOptions({ suppressMarkers: true });
+  }
+
+  eta(start, end) {
+    console.log('====== ETA =====')
+    console.log(start, end)
+    this.directionsService.route({
+      origin: new google.maps.LatLng(start.lat, start.lng),
+      destination: new google.maps.LatLng(end.lat, end.lng),
+      travelMode: google.maps.DirectionsTravelMode.DRIVING
+    }, (response, status) => {
+      if (status == google.maps.DirectionsStatus.OK) {
+        var myRoute = response.routes[0];
+        console.log('ETA');
+        console.log(myRoute.legs[0].distance);
+        let m = myRoute.legs[0].duration.value/60;
+        console.log(Math.ceil(m));
+      }
+    });
   }
 
   addItem() {
