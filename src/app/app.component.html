@@ -10,14 +10,10 @@
       <button class="btn btn-success" (click)="eta(eta_start, eta_end)">ETA</button>
     </div>
     <div class="col-sm mt-3">
-      <button class="btn btn-success">GO</button>
+      <button class="btn btn-success" (click)="addNear()">Add Near</button>
     </div>
-  </div>
-  <div class="row">
-    <ul>
-      <li class="text" *ngFor="let item of list | async">
-        {{item | json}}
-      </li>
-    </ul>
+    <div class="col-sm mt-3">
+      <button class="btn btn-success" (click)="nearby()">Near</button>
+    </div>
   </div>
 </div>

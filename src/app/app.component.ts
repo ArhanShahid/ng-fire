@@ -27,6 +27,11 @@ export class AppComponent implements OnInit {
     { lat: 25.171789238404468, lng: 55.32287021218599 },
     { lat: 25.180333729378265, lng: 55.31531711160005 },
   ];
+  public near = [
+    { lat: 25.08615674084264, lng: 55.392980549587946 },
+    { lat: 25.09337853824279, lng: 55.3871011474273 },
+    { lat: 25.10006311847188, lng: 55.381779644741755 },
+  ];
   public other = [
     { lat: 25.20132334621353, lng: 55.26111242557977 },
     { lat: 25.205538207283162, lng: 55.25284049297784 },
@@ -51,16 +56,20 @@ export class AppComponent implements OnInit {
   public addressLocation: any;
   public directionsDisplay = new google.maps.DirectionsRenderer;
   public directionsService = new google.maps.DirectionsService();
-  private itemsCollection: AngularFirestoreCollection<any>;
+  private driversCollection: AngularFirestoreCollection<any>;
+  private nearCollection: AngularFirestoreCollection<any>;
 
   constructor(protected afs: AngularFirestore) { }
 
   ngOnInit() {
     this.initMap(25.2048493, 55.270782800000006);
-    this.itemsCollection = this.afs.collection<any>('drivers');
-    this.itemsCollection.valueChanges()
+    this.driversCollection = this.afs.collection<any>('drivers');
+    this.nearCollection = this.afs.collection<any>('near_test');
+    this.driversCollection.valueChanges()
       .subscribe(result => result.map(e => this.plotMarker(e)));
 
+    this.nearCollection.valueChanges()
+      .subscribe(result => console.log(result));
 
 
   }
@@ -119,9 +128,31 @@ export class AppComponent implements OnInit {
     })
     line.map(e => {
       console.log(e);
-      //this.itemsCollection.add(e);
+      //this.driversCollection.add(e);
     })
-    //this.itemsCollection.add({userId: 'test'});
+    //this.driversCollection.add({userId: 'test'});
+  }
+
+  addNear() {
+    let near = this.near.map((e, i) => {
+      return {
+        userId: i + 1,
+        name: "user " + i,
+        url: "www.google.com",
+        contact: "0333333333",
+        geoPoint: new firebase.firestore.GeoPoint(e.lat, e.lng),
+        isRide: false,
+        fleetProviderId: "123"
+      }
+    })
+    near.map(e => {
+      console.log(e);
+      //this.nearCollection.add(e);
+    })
+  }
+
+  nearby(){
+    console.log('nearby')
   }
 
 
