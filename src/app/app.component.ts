@@ -57,17 +57,20 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.initMap(25.2048493, 55.270782800000006);
-    this.itemsCollection = this.afs.collection<any>('free_driver');
+    this.itemsCollection = this.afs.collection<any>('drivers');
     this.itemsCollection.valueChanges()
       .subscribe(result => result.map(e => this.plotMarker(e)));
+
+
+
   }
 
   plotMarker(e) {
-    //console.log(e.current.latitude, e.current.longitude);
-    this.marker = new google.maps.Marker({
-      position: new google.maps.LatLng(e.current.latitude, e.current.longitude),
-      map: this.map,
-    });
+    console.log(e.geoPoint.latitude, e.geoPoint.longitude);
+    // this.marker = new google.maps.Marker({
+    //   position: new google.maps.LatLng(e.current.latitude, e.current.longitude),
+    //   map: this.map,
+    // });
   };
 
   initMap(lat, lng) {
@@ -96,7 +99,7 @@ export class AppComponent implements OnInit {
         var myRoute = response.routes[0];
         console.log('ETA');
         console.log(myRoute.legs[0].distance);
-        let m = myRoute.legs[0].duration.value/60;
+        let m = myRoute.legs[0].duration.value / 60;
         console.log(Math.ceil(m));
       }
     });
@@ -104,26 +107,21 @@ export class AppComponent implements OnInit {
 
   addItem() {
     let line = this.line.map((e, i) => {
-      let plat, plng;
-      if (i == 0) {
-        plat = 0;
-        plng = 0;
-      } else {
-        plat = this.line[i - 1].lat;
-        plng = this.line[i - 1].lng;
-      }
       return {
-        userId: '123',
-        current: new firebase.firestore.GeoPoint(e.lat, e.lng),
-        previous: new firebase.firestore.GeoPoint(plat, plng),
+        userId: i + 1,
+        name: "user " + i,
+        url: "www.google.com",
+        contact: "0333333333",
+        geoPoint: new firebase.firestore.GeoPoint(e.lat, e.lng),
         isRide: false,
+        fleetProviderId: "123"
       }
     })
     line.map(e => {
       console.log(e);
       //this.itemsCollection.add(e);
     })
-
+    //this.itemsCollection.add({userId: 'test'});
   }
 
 
