@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/firestore';
 import * as firebase from 'firebase/app';
+import * as geofirex from 'geofirex';
 import { Observable } from 'rxjs';
 
 declare var google: any;
@@ -58,6 +59,8 @@ export class AppComponent implements OnInit {
   public directionsService = new google.maps.DirectionsService();
   private driversCollection: AngularFirestoreCollection<any>;
   private nearCollection: AngularFirestoreCollection<any>;
+  public geo = geofirex.init(firebase);
+  public near_driver: any;
 
   constructor(protected afs: AngularFirestore) { }
 
@@ -65,11 +68,15 @@ export class AppComponent implements OnInit {
     this.initMap(25.2048493, 55.270782800000006);
     this.driversCollection = this.afs.collection<any>('drivers');
     this.nearCollection = this.afs.collection<any>('near_test');
-    this.driversCollection.valueChanges()
-      .subscribe(result => result.map(e => this.plotMarker(e)));
+
+    // this.driversCollection.valueChanges()
+    //   .subscribe(result => result.map(e => this.plotMarker(e)));
 
     this.nearCollection.valueChanges()
-      .subscribe(result => console.log(result));
+      .subscribe(result => {
+        console.log(result);
+
+      });
 
 
   }
@@ -151,8 +158,26 @@ export class AppComponent implements OnInit {
     })
   }
 
-  nearby(){
-    console.log('nearby')
+  nearby() {
+    console.log('nearby');
+    const driver = this.geo.collection('near_test');
+    const center = this.geo.point(25.08615674084264,55.392980549587946);
+    const radius = 1;
+    const field = 'geoPoint';
+    console.log(center);
+    console.log(radius);
+    console.log(field);
+    
+    //const query = driver.within(center, radius, field);
+    // query.subscribe(e => {
+    //   console.log('---- Query ----');
+    //   console.log(e);
+    // });
+    const query = driver.first();
+    console.log("First");
+    console.log(query);
+    
+
   }
 
 
