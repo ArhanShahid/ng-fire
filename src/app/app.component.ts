@@ -141,19 +141,22 @@ export class AppComponent implements OnInit {
   }
 
   addNear() {
+    const driver = this.geo.collection('near_test');
     let near = this.near.map((e, i) => {
       return {
         userId: i + 1,
         name: "user " + i,
         url: "www.google.com",
         contact: "0333333333",
-        geoPoint: new firebase.firestore.GeoPoint(e.lat, e.lng),
+        //geoPoint: new firebase.firestore.GeoPoint(e.lat, e.lng),
+        geoPoint: this.geo.point(e.lat, e.lng).data,
         isRide: false,
         fleetProviderId: "123"
       }
     })
     near.map(e => {
       console.log(e);
+      //driver.add(e);
       //this.nearCollection.add(e);
     })
   }
@@ -161,23 +164,14 @@ export class AppComponent implements OnInit {
   nearby() {
     console.log('nearby');
     const driver = this.geo.collection('near_test');
-    const center = this.geo.point(25.08615674084264,55.392980549587946);
-    const radius = 1;
+    const center = this.geo.point(25.08615674084264, 55.392980549587946);
+    const radius = 10;
     const field = 'geoPoint';
-    console.log(center);
-    console.log(radius);
-    console.log(field);
-    
-    //const query = driver.within(center, radius, field);
-    // query.subscribe(e => {
-    //   console.log('---- Query ----');
-    //   console.log(e);
-    // });
-    const query = driver.first();
-    console.log("First");
-    console.log(query);
-    
-
+    const query = driver.within(center, radius, field);
+    query.subscribe(e => {
+      console.log('---- Query ----');
+      console.log(e);
+    });
   }
 
 
