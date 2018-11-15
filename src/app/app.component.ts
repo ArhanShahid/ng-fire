@@ -32,6 +32,7 @@ export class AppComponent implements OnInit {
     { lat: 25.08615674084264, lng: 55.392980549587946 },
     { lat: 25.09337853824279, lng: 55.3871011474273 },
     { lat: 25.10006311847188, lng: 55.381779644741755 },
+    { lat: 24.8607343, lng: 67.00113639999995 },
   ];
   public other = [
     { lat: 25.20132334621353, lng: 55.26111242557977 },
@@ -163,7 +164,10 @@ export class AppComponent implements OnInit {
 
   nearby() {
     console.log('nearby');
-    const driver = this.geo.collection('near_test');
+
+    const driver = this.geo.collection('near_test',ref =>
+      ref.where('isRide', '==', false));
+
     const center = this.geo.point(25.08615674084264, 55.392980549587946);
     const radius = 10;
     const field = 'geoPoint';
