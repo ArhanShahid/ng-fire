@@ -27,8 +27,8 @@ export class AppComponent implements OnInit {
   public addressLocation: any;
   public directionsDisplay = new google.maps.DirectionsRenderer;
   public directionsService = new google.maps.DirectionsService();
-  private driversCollection: AngularFirestoreCollection<any>;
-  private nearCollection: AngularFirestoreCollection<any>;
+  public driversCollection: AngularFirestoreCollection<any>;
+  public nearCollection: AngularFirestoreCollection<any>;
   public geo = geofirex.init(firebase);
   public near_driver: any;
 
@@ -38,8 +38,8 @@ export class AppComponent implements OnInit {
     this.driversCollection = this.afs.collection<any>('drivers');
     this.nearCollection = this.afs.collection<any>('near_test');
 
-    // this.driversCollection.valueChanges()
-    //   .subscribe(result => result.map(e => this.plotMarker(e)));
+    this.driversCollection.valueChanges()
+      .subscribe(result => result.map(e => this.plotMarker(e)));
 
     this.nearCollection.valueChanges()
       .subscribe(result => {
@@ -50,7 +50,7 @@ export class AppComponent implements OnInit {
   }
 
   plotMarker(e) {
-    console.log(e.geoPoint.latitude, e.geoPoint.longitude);
+    //console.log(e.geoPoint.latitude, e.geoPoint.longitude);
     // this.marker = new google.maps.Marker({
     //   position: new google.maps.LatLng(e.current.latitude, e.current.longitude),
     //   map: this.map,
@@ -58,7 +58,6 @@ export class AppComponent implements OnInit {
   };
 
   initMap(lat, lng) {
-    const self = this;
     this.map = new google.maps.Map(document.getElementById('orderBookingMap'), {
       center: new google.maps.LatLng(lat, lng),
       zoom: 11,
@@ -71,24 +70,6 @@ export class AppComponent implements OnInit {
     this.directionsDisplay.setOptions({ suppressMarkers: true });
   }
 
-  // eta(start, end) {
-  //   console.log('====== ETA =====')
-  //   console.log(start, end)
-  //   this.directionsService.route({
-  //     origin: new google.maps.LatLng(start.lat, start.lng),
-  //     destination: new google.maps.LatLng(end.lat, end.lng),
-  //     travelMode: google.maps.DirectionsTravelMode.DRIVING
-  //   }, (response, status) => {
-  //     if (status == google.maps.DirectionsStatus.OK) {
-  //       var myRoute = response.routes[0];
-  //       console.log('ETA');
-  //       console.log(myRoute.legs[0].distance);
-  //       let m = myRoute.legs[0].duration.value / 60;
-  //       console.log(Math.ceil(m));
-  //     }
-  //   });
-  // }
-
   async eta(start, end) {
     let e1 = await this.etaService.eta(start, end);
     console.log('ETA1: ', e1);
@@ -96,7 +77,7 @@ export class AppComponent implements OnInit {
     console.log('ETA2: ', e2);
   }
 
-  addItem() {
+  addDriver() {
     let line = this.line.map((e, i) => {
       return {
         userId: i + 1,
@@ -104,6 +85,7 @@ export class AppComponent implements OnInit {
         url: "www.google.com",
         contact: "0333333333",
         geoPoint: new firebase.firestore.GeoPoint(e.lat, e.lng),
+        //geoPoint: this.geo.point(e.lat, e.lng).data,
         isRide: false,
         fleetProviderId: "123"
       }
@@ -112,18 +94,16 @@ export class AppComponent implements OnInit {
       console.log(e);
       //this.driversCollection.add(e);
     })
-    //this.driversCollection.add({userId: 'test'});
+
   }
 
   addNear() {
-    const driver = this.geo.collection('near_test');
     let near = this.near.map((e, i) => {
       return {
         userId: i + 1,
         name: "user " + i,
         url: "www.google.com",
         contact: "0333333333",
-        //geoPoint: new firebase.firestore.GeoPoint(e.lat, e.lng),
         geoPoint: this.geo.point(e.lat, e.lng).data,
         isRide: false,
         fleetProviderId: "123"
@@ -131,14 +111,12 @@ export class AppComponent implements OnInit {
     })
     near.map(e => {
       console.log(e);
-      //driver.add(e);
       //this.nearCollection.add(e);
     })
   }
 
   nearby() {
     console.log('nearby');
-
     const driver = this.geo.collection('near_test', ref =>
       ref.where('isRide', '==', false));
     const center = this.geo.point(25.08615674084264, 55.392980549587946);
