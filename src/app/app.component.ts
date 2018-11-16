@@ -47,6 +47,16 @@ export class AppComponent implements OnInit {
       });
 
 
+    let i = 0;
+    let p = setInterval(() => {
+      if (i <= 10) {
+        console.log(i);
+      } else {
+        clearInterval(p);
+      }
+      i++;
+    }, 5000);
+
   }
 
   plotMarker(e) {
