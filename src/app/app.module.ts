@@ -5,7 +5,8 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 import { environment } from '../environments/environment';
 
-import { ReadService } from './read.service';
+import { MockDataService } from './mock.service';
+import { EtaService } from './eta.service';
 import { AppComponent } from './app.component';
 
 @NgModule({
@@ -18,7 +19,7 @@ import { AppComponent } from './app.component';
     AngularFirestoreModule,
     AngularFireStorageModule
   ],
-  providers: [ReadService],
+  providers: [MockDataService, EtaService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
