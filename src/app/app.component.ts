@@ -89,10 +89,11 @@ export class AppComponent implements OnInit {
   //   });
   // }
 
-  eta(start, end) {
-    this.etaService.eta(start, end, eta => {
-      console.log('ETA: ', eta);
-    })
+  async eta(start, end) {
+    let e1 = await this.etaService.eta(start, end);
+    console.log('ETA1: ', e1);
+    let e2 = await this.etaService.eta(start, end);
+    console.log('ETA2: ', e2);
   }
 
   addItem() {
