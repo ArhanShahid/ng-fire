@@ -11,23 +11,6 @@ export class EtaService {
 
   constructor() { }
 
-  // eta(start, end, cb) {
-  //   this.directionsService.route({
-  //     origin: new google.maps.LatLng(start.lat, start.lng),
-  //     destination: new google.maps.LatLng(end.lat, end.lng),
-  //     travelMode: google.maps.DirectionsTravelMode.DRIVING
-  //   }, (response, status) => {
-  //     if (status == google.maps.DirectionsStatus.OK) {
-  //       const myRoute = response.routes[0];
-  //       const eta = Math.ceil(myRoute.legs[0].duration.value / 60);
-  //       cb(eta);
-  //     } else {
-  //       cb(0);
-  //     }
-  //   });
-  // }
-
-
   eta(start, end): Promise<any> {
     return new Promise((resolve, reject) => {
       new google.maps.DirectionsService().route({

@@ -36,7 +36,11 @@ export class AppComponent implements OnInit {
     this.nearCollection = this.afs.collection<any>('near_test');
 
     this.driversCollection.valueChanges()
-      .subscribe(result => result.map(e => this.plotMarker(e)));
+      .subscribe(result => {
+        this.setMapOnAll(null);
+        this.markers = [];
+        result.map(e => this.plotMarker(e))
+      });
 
     this.nearCollection.valueChanges()
       .subscribe(result => {
@@ -67,8 +71,6 @@ export class AppComponent implements OnInit {
   }
 
   plotMarker(e) {
-    this.setMapOnAll(null);
-    this.markers = [];
     const marker = new google.maps.Marker({
       position: new google.maps.LatLng(e.geoPoint.geopoint.latitude, e.geoPoint.geopoint.longitude),
       map: this.map,
@@ -107,8 +109,7 @@ export class AppComponent implements OnInit {
         name: "user " + i,
         url: "www.google.com",
         contact: "0333333333",
-        geoPoint: new firebase.firestore.GeoPoint(e.lat, e.lng),
-        //geoPoint: this.geo.point(e.lat, e.lng).data,
+        geoPoint: this.geo.point(e.lat, e.lng).data,
         isRide: false,
         fleetProviderId: "123"
       }
@@ -139,9 +140,10 @@ export class AppComponent implements OnInit {
   }
 
   nearby() {
-    console.log('nearby');
     const driver = this.geo.collection('near_test', ref =>
       ref.where('isRide', '==', false));
+
+
     const center = this.geo.point(25.08615674084264, 55.392980549587946);
     const radius = 10;
     const field = 'geoPoint';
