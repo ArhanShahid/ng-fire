@@ -23,14 +23,11 @@ export class AppComponent implements OnInit {
   public eta_end = this.mdata.eta_end;
 
   public map: any;
-  public marker: any;
-  public addressLocation: any;
+  public markers = [];
   public directionsDisplay = new google.maps.DirectionsRenderer;
-  public directionsService = new google.maps.DirectionsService();
   public driversCollection: AngularFirestoreCollection<any>;
   public nearCollection: AngularFirestoreCollection<any>;
   public geo = geofirex.init(firebase);
-  public near_driver: any;
 
 
   ngOnInit() {
@@ -46,26 +43,42 @@ export class AppComponent implements OnInit {
         console.log(result);
       });
 
+    // this.other.forEach((e) => {
+    //   const marker = new google.maps.Marker({
+    //     position: new google.maps.LatLng(e.lat, e.lng),
+    //     map: this.map,
+    //   });
+    //   this.markers.push(marker);
+    // });
+    // setTimeout(() => {
+    //   this.setMapOnAll(null);
+    //   this.markers = [];
+    //   console.log(' setMapOnAll ')
+    //   this.line.forEach((e) => {
+    //     const marker = new google.maps.Marker({
+    //       position: new google.maps.LatLng(e.lat, e.lng),
+    //       map: this.map,
+    //     });
+    //     this.markers.push(marker);
+    //   })
+    // }, 5000);
 
-    let i = 0;
-    let p = setInterval(() => {
-      if (i <= 10) {
-        console.log(i);
-      } else {
-        clearInterval(p);
-      }
-      i++;
-    }, 5000);
 
   }
 
   plotMarker(e) {
-    //console.log(e.geoPoint.latitude, e.geoPoint.longitude);
-    // this.marker = new google.maps.Marker({
-    //   position: new google.maps.LatLng(e.current.latitude, e.current.longitude),
-    //   map: this.map,
-    // });
+    this.setMapOnAll(null);
+    this.markers = [];
+    const marker = new google.maps.Marker({
+      position: new google.maps.LatLng(e.geoPoint.geopoint.latitude, e.geoPoint.geopoint.longitude),
+      map: this.map,
+    });
+    this.markers.push(marker);
   };
+
+  setMapOnAll(map) {
+    this.markers.forEach(m => m.setMap(map))
+  }
 
   initMap(lat, lng) {
     this.map = new google.maps.Map(document.getElementById('orderBookingMap'), {
