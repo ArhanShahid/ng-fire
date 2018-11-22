@@ -110,13 +110,13 @@ export class AppComponent implements OnInit {
         url: "www.google.com",
         contact: "0333333333",
         geoPoint: this.geo.point(e.lat, e.lng).data,
-        isRide: false,
+        rideId: null,
         fleetProviderId: "123"
       }
     })
     line.map(e => {
       console.log(e);
-      //this.driversCollection.add(e);
+      //this.driversCollection.doc(e.userId.toString()).set(e);
     })
 
   }
