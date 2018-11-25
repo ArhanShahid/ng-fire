@@ -200,6 +200,17 @@ export class AppComponent implements OnInit {
     })
   }
 
+  update(){
+    //Need to set all whole object.
+   this.nearCollection.doc('5').set({ 
+     'name': 'Arhan Shahid'
+    });
+  }
+
+  delete(){
+   this.nearCollection.doc('5').delete()
+  }
+
   nearby() {
     const driver = this.geo.collection('drivers', ref =>
       ref.where('rideId', '==', null));
