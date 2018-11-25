@@ -44,5 +44,13 @@ export class MockDataService {
   public eta_end = {
     lat: 25.09337853824279, lng: 55.3871011474273
   }
+  public rides = [
+    { status: 'accepted' },
+    { status: 'checkIn' },
+    { status: 'approved' },
+    { status: 'dispatched' },
+    { status: 'reached' },
+    { status: 'checkOut' }
+  ]
 
 }

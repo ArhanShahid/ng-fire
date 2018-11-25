@@ -21,6 +21,7 @@ export class AppComponent implements OnInit {
   public line = this.mdata.line;
   public near = this.mdata.near;
   public other = this.mdata.other;
+  public rides = this.mdata.rides;
   public eta_start = this.mdata.eta_start;
   public eta_end = this.mdata.eta_end;
 
@@ -200,15 +201,15 @@ export class AppComponent implements OnInit {
     })
   }
 
-  update(){
+  update() {
     //Need to set all whole object.
-   this.nearCollection.doc('5').set({ 
-     'name': 'Arhan Shahid'
+    this.nearCollection.doc('5').set({
+      'name': 'Arhan Shahid'
     });
   }
 
-  delete(){
-   this.nearCollection.doc('5').delete()
+  delete() {
+    this.nearCollection.doc('5').delete()
   }
 
   nearby() {
@@ -227,30 +228,36 @@ export class AppComponent implements OnInit {
   }
 
   addRides() {
-    const d = {
-      karry: { contact: "1231313123", id: "", name: "user" },
-      latlong: [],
-      merchant: {
-        id: "123123123123",
-        email: "a@b.c",
-        name: "masdasd",
-        location: { lat: "12313", long: "123123" }
-      },
-      orderDetail: {
-        customer: {
-          address: "",
-          area: "",
-          contact: "",
-          location: { lat: "", long: "" },
-          name: "",
-          nearby: { lat: "", long: "" }
+    let arr = [];
+    this.rides.map((r, i) => {
+      arr.push({
+        karry: { contact: "033333333", id: "123", name: "user " + i + 1 },
+        latlong: [],
+        merchant: {
+          id: i + 1,
+          email: "merchant@merchant.com",
+          name: "Merchant Name",
+          location: { lat: "12313", long: "123123" }
         },
-        dueAmount: "",
-        dueTime: "",
-        orderId: "",
-        paymentMode: ""
-      }
-    }
+        orderDetail: {
+          customer: {
+            address: "Customer Address",
+            area: "",
+            contact: "",
+            location: { lat: "", long: "" },
+            name: "",
+            nearby: { lat: "", long: "" }
+          },
+          dueAmount: "",
+          dueTime: "",
+          orderId: i + 1,
+          paymentMode: ""
+        }
+      });
+    })
+
+    console.log(arr);
+
   }
 
 
