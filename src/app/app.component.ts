@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
-import * as firebase from 'firebase/app';
-import * as geofirex from 'geofirex';
 import { MockDataService } from './mock.service';
 import { EtaService } from './eta.service';
 
+import * as firebase from 'firebase/app';
+import * as geofirex from 'geofirex';
 declare var google: any;
 
 @Component({
@@ -14,7 +14,9 @@ declare var google: any;
 })
 export class AppComponent implements OnInit {
 
-  constructor(protected afs: AngularFirestore, protected mdata: MockDataService, protected etaService: EtaService) { }
+  constructor(protected afs: AngularFirestore,
+    protected mdata: MockDataService,
+    protected etaService: EtaService) { }
 
   public line = this.mdata.line;
   public near = this.mdata.near;
@@ -47,6 +49,8 @@ export class AppComponent implements OnInit {
         console.log(result);
       });
 
+
+    // Following code is to mock remove old map marker and plot new one on firebase data update.
     // this.other.forEach((e) => {
     //   const marker = new google.maps.Marker({
     //     position: new google.maps.LatLng(e.lat, e.lng),
@@ -66,8 +70,6 @@ export class AppComponent implements OnInit {
     //     this.markers.push(marker);
     //   })
     // }, 5000);
-
-
   }
 
   plotMarker(e) {
@@ -97,9 +99,16 @@ export class AppComponent implements OnInit {
 
   async eta(start, end) {
     let e1 = await this.etaService.eta(start, end);
-    console.log('ETA1: ', e1);
     let e2 = await this.etaService.eta(start, end);
-    console.log('ETA2: ', e2);
+    const eta = {
+      kToM: Math.ceil(e1.duration.value / 60),
+      weight: 10,
+      mToC: Math.ceil(e2.duration.value / 60),
+    }
+    const total = Math.ceil(e1.duration.value / 60) + 10 + Math.ceil(e2.duration.value / 60);
+    console.log('ETA from Karry to Merchant: ', eta.kToM);
+    console.log('ETA from Merchant to Customer: ', eta.mToC);
+    console.log('ETA total: ', total);
   }
 
   addDriver() {
@@ -129,19 +138,19 @@ export class AppComponent implements OnInit {
         url: "www.google.com",
         contact: "0333333333",
         geoPoint: this.geo.point(e.lat, e.lng).data,
-        isRide: false,
+        rideId: null,
         fleetProviderId: "123"
       }
     })
     near.map(e => {
       console.log(e);
-      //this.nearCollection.add(e);
+      //this.nearCollection.doc(e.userId.toString()).set(e);
     })
   }
 
   nearby() {
-    const driver = this.geo.collection('near_test', ref =>
-      ref.where('isRide', '==', false));
+    const driver = this.geo.collection('drivers', ref =>
+      ref.where('rideId', '==', null));
 
 
     const center = this.geo.point(25.08615674084264, 55.392980549587946);

@@ -19,14 +19,12 @@ export class EtaService {
         travelMode: google.maps.DirectionsTravelMode.DRIVING
       }, (response, status) => {
         if (status == google.maps.DirectionsStatus.OK) {
-          const myRoute = response.routes[0];
-          const eta = Math.ceil(myRoute.legs[0].duration.value / 60);
-          resolve(eta)
+          const route = response.routes[0];
+          resolve(route.legs[0])
         } else {
-          reject(0)
+          reject(-1)
         }
       })
     })
-
   }
 }

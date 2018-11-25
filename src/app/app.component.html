@@ -1,19 +1,21 @@
-<div class="container">
+<div class="container-fluid">
   <div class="row">
-    <div class="order-booking-map" id="orderBookingMap"></div>
-  </div>
-  <div class="row">
-    <div class="col-sm mt-3">
-      <button class="btn btn-success" (click)="addDriver()">ADD</button>
+    <div class="col-lg-10">
+      <div class="order-booking-map" id="orderBookingMap"></div>
     </div>
-    <div class="col-sm mt-3">
-      <button class="btn btn-success" (click)="eta(eta_start, eta_end)">ETA</button>
-    </div>
-    <div class="col-sm mt-3">
-      <button class="btn btn-success" (click)="addNear()">Add Near</button>
-    </div>
-    <div class="col-sm mt-3">
-      <button class="btn btn-success" (click)="nearby()">Near</button>
+    <div class="col-lg-2">
+      <div class="m-3">
+        <button class="btn btn-success btn-block" (click)="addDriver()">ADD Driver</button>
+      </div>
+      <div class="m-3">
+        <button class="btn btn-success btn-block" (click)="eta(eta_start, eta_end)">Calc ETA</button>
+      </div>
+      <div class="m-3">
+        <button class="btn btn-success btn-block" (click)="addNear()">Add NearBy</button>
+      </div>
+      <div class="m-3">
+        <button class="btn btn-success btn-block" (click)="nearby()">Calc Near</button>
+      </div>
     </div>
   </div>
 </div>
