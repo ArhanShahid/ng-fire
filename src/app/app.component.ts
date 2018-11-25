@@ -25,26 +25,38 @@ export class AppComponent implements OnInit {
   public eta_end = this.mdata.eta_end;
 
   public map: any;
+  public polyLineMap: any;
   public markers = [];
   public directionsDisplay = new google.maps.DirectionsRenderer;
   public driversCollection: AngularFirestoreCollection<any>;
   public nearCollection: AngularFirestoreCollection<any>;
+  public ridesCollection: AngularFirestoreCollection<any>;
   public geo = geofirex.init(firebase);
 
 
   ngOnInit() {
     this.initMap(25.2048493, 55.270782800000006);
+
+    this.initPolyLineMap(25.2048493, 55.270782800000006);
+    this.initializePolyLine();
+
     this.driversCollection = this.afs.collection<any>('drivers');
     this.nearCollection = this.afs.collection<any>('near_test');
+    this.ridesCollection = this.afs.collection<any>('rides');
 
     this.driversCollection.valueChanges()
       .subscribe(result => {
         this.setMapOnAll(null);
         this.markers = [];
-        result.map(e => this.plotMarker(e))
+        result.map(e => this.plotMarker(e));
       });
 
     this.nearCollection.valueChanges()
+      .subscribe(result => {
+        console.log(result);
+      });
+
+    this.ridesCollection.valueChanges()
       .subscribe(result => {
         console.log(result);
       });
@@ -96,6 +108,46 @@ export class AppComponent implements OnInit {
     this.directionsDisplay.setMap(this.map);
     this.directionsDisplay.setOptions({ suppressMarkers: true });
   }
+
+  initPolyLineMap(lat, lng) {
+    this.polyLineMap = new google.maps.Map(document.getElementById('polyLineMap'), {
+      center: new google.maps.LatLng(lat, lng),
+      zoom: 12,
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      scrollwheel: true,
+      disableDefaultUI: true,
+      zoomControl: true
+    });
+    this.directionsDisplay.setMap(this.polyLineMap);
+    this.directionsDisplay.setOptions({ suppressMarkers: true });
+  }
+
+  plotDataFilter(data) {
+    let source = data[0];
+    let destination = data[data.length - 1];
+    let path = [];
+    for (let i = 0; i < (data.length - 2); i++) {
+      path.push(data[i + 1]);
+    }
+    return {
+      "source": source,
+      "destination": destination,
+      "path": path
+    }
+  };
+
+  initializePolyLine() {
+    let plotData = this.plotDataFilter(this.line);
+    let googleMapsLatLng = plotData.path.map((v) => new google.maps.LatLng(v.lat, v.lng));
+    var flightPath = new google.maps.Polyline({
+      path: googleMapsLatLng,
+      strokeColor: "#000000",
+      strokeOpacity: 0.5,
+      strokeWeight: 4
+    });
+    flightPath.setMap(this.polyLineMap);
+  }
+
 
   async eta(start, end) {
     let e1 = await this.etaService.eta(start, end);
@@ -161,6 +213,33 @@ export class AppComponent implements OnInit {
       console.log('---- Query ----');
       console.log(e);
     });
+  }
+
+  addRides() {
+    const d = {
+      karry: { contact: "1231313123", id: "", name: "user" },
+      latlong: [],
+      merchant: {
+        id: "123123123123",
+        email: "a@b.c",
+        name: "masdasd",
+        location: { lat: "12313", long: "123123" }
+      },
+      orderDetail: {
+        customer: {
+          address: "",
+          area: "",
+          contact: "",
+          location: { lat: "", long: "" },
+          name: "",
+          nearby: { lat: "", long: "" }
+        },
+        dueAmount: "",
+        dueTime: "",
+        orderId: "",
+        paymentMode: ""
+      }
+    }
   }
 
 
